@@ -81,9 +81,13 @@ class _ProfilePageHandler:
 
         # Personal Details
         personal_container = soup.find("div", class_="media-body")
-        img_tag = soup.find("img", class_="media-object")
-        profile_image_base64 = img_tag["src"] if img_tag else None
-        profile_image_base64 = profile_image_base64.split("data:image/jpeg;base64,")[1]
+
+        if high_privacy:
+            img_tag = soup.find("img", class_="media-object")
+            profile_image_base64 = img_tag["src"] if img_tag else None
+            profile_image_base64 = profile_image_base64.split("data:image/jpeg;base64,")[1]
+        else:
+            profile_image_base64 = None
 
         personal = PersonalDetails(
             name=_ProfilePageHandler._find_value_for_label(personal_container, "Name"),
@@ -93,18 +97,10 @@ class _ProfilePageHandler:
             branch=_ProfilePageHandler._find_value_for_label(personal_container, "Branch"),
             semester=_ProfilePageHandler._find_value_for_label(personal_container, "Semester"),
             section=_ProfilePageHandler._find_value_for_label(personal_container, "Section"),
-            email_id=None
-            if high_privacy
-            else _ProfilePageHandler._find_value_for_label(personal_container, "Email ID"),
-            contact_no=None
-            if high_privacy
-            else _ProfilePageHandler._find_value_for_label(personal_container, "Contact No"),
-            aadhar_no=None
-            if high_privacy
-            else _ProfilePageHandler._find_value_for_label(personal_container, "Aadhar No"),
-            name_as_in_aadhar=None
-            if high_privacy
-            else _ProfilePageHandler._find_value_for_label(personal_container, "Name as in aadhar"),
+            email_id=privacy_value("Email ID", personal_container, high_privacy),
+            contact_no=privacy_value("Contact No", personal_container, high_privacy),
+            aadhar_no=privacy_value("Aadhar No", personal_container, high_privacy),
+            name_as_in_aadhar=privacy_value("Name as in aadhar", personal_container, high_privacy),
             image=profile_image_base64,
         )
 

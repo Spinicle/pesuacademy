@@ -80,7 +80,7 @@ class PESUAcademy:
 
         client = _PesuScraper()
         await client.login(uname, pword, hpriv)
-        return cls(client)
+        return cls(client, hpriv)
 
     async def get_profile(self) -> Profile:
         """Fetches the student's detailed profile information.
